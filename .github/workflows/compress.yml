@@ -36,13 +36,11 @@ jobs:
       run: |
         tar -tzvf $HOME/changed_files.tar.gz
 
-    - name: Upload Tar Archive
-      uses: actions/upload-artifact@v2
-      with:
-        name: changed-files
-        path: $HOME/changed_files.tar.gz
+    - name: Commit and Push Tar Archive
+      run: |
+        git config --global user.email "actions@github.com"
+        git config --global user.name "GitHub Actions"
+        git add $HOME/changed_files.tar.gz
+        git commit -m "Add changed_files.tar.gz"
+        git push
 
-    # Ensure the artifact is uploaded even if previous steps fail
-    - name: Upload Always
-      if: always()
-      run: echo "Workflow completed, even if previous steps failed."
