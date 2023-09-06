@@ -1,0 +1,43 @@
+name: Identify and Archive File Changes
+
+on:
+  push:
+    branches:
+      - main # You can specify the branch you want to trigger this on
+
+jobs:
+  identify_and_archive:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Identify File Changes
+      id: file_changes
+      run: |
+        # Get the list of changed files in the current commit
+        changed_files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
+        echo "Changed Files:"
+        echo "$changed_files"
+
+    - name: Archive Changed Files
+      id: archive_files
+      run: |
+        # Create a tar archive of the changed files
+        tar -czvf changed_files.tar.gz $changed_files
+
+    - name: Display Archive Contents
+      run: |
+        # List the contents of the tar archive
+        tar -tzvf changed_files.tar.gz
+
+    - name: Move Archive Locally
+      run: |
+        # Move the archive to a specific directory on the runner machine
+        mv changed_files.tar.gz $HOME/workflow_data/changed_files.tar.gz
+
+    - name: Print Archive Path
+      run: |
+        # Print the path to the created tar file
+        echo "Path to Tar Archive: $HOME/workflow_data/changed_files.tar.gz"
