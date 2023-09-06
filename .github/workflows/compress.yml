@@ -41,3 +41,8 @@ jobs:
       with:
         name: changed-files
         path: $HOME/changed_files.tar.gz
+
+    # Ensure the artifact is uploaded even if previous steps fail
+    - name: Upload Always
+      if: always()
+      run: echo "Workflow completed, even if previous steps failed."
