@@ -48,7 +48,7 @@ jobs:
 
         # Authenticate using a Personal Access Token (PAT) with write access
         git fetch --no-tags --prune --progress --depth=1 origin +refs/heads/*:refs/remotes/origin/*
-        git checkout -b main
+        git checkout main
         git add changed_files_new.tar.gz
         git commit -m "Add changed_files_new.tar.gz"
-        git push origin HEAD:main
+        git push origin main
