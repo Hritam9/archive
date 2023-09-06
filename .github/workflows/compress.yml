@@ -16,27 +16,28 @@ jobs:
     - name: Identify Changed Files
       id: changed_files
       run: |
-        # Get the list of changed files in the latest commit
         git diff-tree --no-commit-id --name-only -r HEAD > changed_files.txt
         cat changed_files.txt
 
     - name: Create Tar Archive
       run: |
-        # Create a tar archive of the changed files
         tar -czvf changed_files.tar.gz -T changed_files.txt
         ls -l changed_files.tar.gz
 
     - name: Save Archive Locally
       run: |
-        # Move the archive to a specific directory on the runner machine
         mv changed_files.tar.gz $HOME/changed_files.tar.gz
 
     - name: Print Archive Path
       run: |
-        # Print the path to the created tar archive
         echo "Path to Tar Archive: $HOME/changed_files.tar.gz"
 
     - name: Display Archive Contents
       run: |
-        # List the contents of the tar archive
         tar -tzvf $HOME/changed_files.tar.gz
+
+    - name: Upload Tar Archive
+      uses: actions/upload-artifact@v2
+      with:
+        name: changed-files
+        path: $HOME/changed_files.tar.gz
