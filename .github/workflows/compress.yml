@@ -1,43 +1,42 @@
-name: Identify and Archive File Changes
+name: Create and Save Tar Archive
 
 on:
   push:
     branches:
-      - main # You can specify the branch you want to trigger this on
+      - main
 
 jobs:
-  identify_and_archive:
+  create_and_save_tar:
     runs-on: ubuntu-latest
     
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v2
 
-    - name: Identify File Changes
-      id: file_changes
+    - name: Identify Changed Files
+      id: changed_files
       run: |
-        # Get the list of changed files in the current commit
-        changed_files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
-        echo "Changed Files:"
-        echo "$changed_files"
+        # Get the list of changed files in the latest commit
+        git diff-tree --no-commit-id --name-only -r HEAD > changed_files.txt
+        cat changed_files.txt
 
-    - name: Archive Changed Files
-      id: archive_files
+    - name: Create Tar Archive
       run: |
         # Create a tar archive of the changed files
-        tar -czvf changed_files.tar.gz $changed_files
+        tar -czvf changed_files.tar.gz -T changed_files.txt
+        ls -l changed_files.tar.gz
+
+    - name: Save Archive Locally
+      run: |
+        # Move the archive to a specific directory on the runner machine
+        mv changed_files.tar.gz $HOME/changed_files.tar.gz
+
+    - name: Print Archive Path
+      run: |
+        # Print the path to the created tar archive
+        echo "Path to Tar Archive: $HOME/changed_files.tar.gz"
 
     - name: Display Archive Contents
       run: |
         # List the contents of the tar archive
-        tar -tzvf changed_files.tar.gz
-
-    - name: Move Archive Locally
-      run: |
-        # Move the archive to a specific directory on the runner machine
-        mv changed_files.tar.gz $HOME/workflow_data/changed_files.tar.gz
-
-    - name: Print Archive Path
-      run: |
-        # Print the path to the created tar file
-        echo "Path to Tar Archive: $HOME/workflow_data/changed_files.tar.gz"
+        tar -tzvf $HOME/changed_files.tar.gz
