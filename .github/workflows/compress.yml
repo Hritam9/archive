@@ -37,10 +37,23 @@ jobs:
       run: |
         tar -tzvf $GITHUB_WORKSPACE/changed_files_new.tar.gz
 
-    - name: Commit and Push Tar Archive
+    - name: Configure Git
       run: |
         git config --global user.email "actions@github.com"
         git config --global user.name "GitHub Actions"
+        git config --global credential.helper store
+
+    - name: Commit and Push Tar Archive
+      run: |
+        # Configure Git to use a Personal Access Token (PAT) for authentication
+        git config --global user.email "actions@github.com"
+        git config --global user.name "GitHub Actions"
+        git config --global credential.helper store
+        git remote set-url origin "https://github.com/${{ github.repository }}.git"
+
+        # Authenticate using a Personal Access Token (PAT)
+        git fetch
+        git checkout main
         git add changed_files_new.tar.gz
         git commit -m "Add changed_files_new.tar.gz"
         git push
