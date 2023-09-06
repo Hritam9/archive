@@ -41,14 +41,14 @@ jobs:
         git config --global user.email "${GITHUB_EMAIL}"
         git config --global user.name "${GITHUB_ACTOR}"
 
-    - name: Authenticate with PAT
+    - name: Push to Main Branch
       run: |
         # Set up the GitHub repository URL
         git remote set-url origin "https://github.com/${{ github.repository }}.git"
 
         # Authenticate using a Personal Access Token (PAT) with write access
         git fetch --no-tags --prune --progress --depth=1 origin +refs/heads/*:refs/remotes/origin/*
-        git checkout refs/remotes/origin/main
+        git checkout -b main
         git add changed_files_new.tar.gz
         git commit -m "Add changed_files_new.tar.gz"
-        git push
+        git push origin HEAD:main
