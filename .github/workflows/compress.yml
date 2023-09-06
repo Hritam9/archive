@@ -26,21 +26,21 @@ jobs:
 
     - name: Copy Tar Archive to Repository
       run: |
-        # Copy the tar file to a directory within the repository
-        cp changed_files.tar.gz $GITHUB_WORKSPACE/changed_files.tar.gz
+        # Copy the tar file to a directory within the repository with a different name
+        cp changed_files.tar.gz $GITHUB_WORKSPACE/changed_files_new.tar.gz
 
     - name: Print Archive Path
       run: |
-        echo "Path to Tar Archive: $GITHUB_WORKSPACE/changed_files.tar.gz"
+        echo "Path to Tar Archive: $GITHUB_WORKSPACE/changed_files_new.tar.gz"
 
     - name: Display Archive Contents
       run: |
-        tar -tzvf $GITHUB_WORKSPACE/changed_files.tar.gz
+        tar -tzvf $GITHUB_WORKSPACE/changed_files_new.tar.gz
 
     - name: Commit and Push Tar Archive
       run: |
         git config --global user.email "actions@github.com"
         git config --global user.name "GitHub Actions"
-        git add changed_files.tar.gz
-        git commit -m "Add changed_files.tar.gz"
+        git add changed_files_new.tar.gz
+        git commit -m "Add changed_files_new.tar.gz"
         git push
